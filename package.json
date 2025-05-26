@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "scripts": {
     "start": "cd backend && npm install && npm start",
-    "build": "echo 'no frontend build needed'"
+    "build": "cd frontend && npm install && npm run build"
   }
 }
