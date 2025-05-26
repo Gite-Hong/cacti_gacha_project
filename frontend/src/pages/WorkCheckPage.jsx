@@ -1,5 +1,5 @@
 // WorkCheckPage.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import ExcelJS from "exceljs";
@@ -39,8 +39,10 @@ function WorkCheckPage() {
     if (username) setSelectedEmployee(username);
   }, [username]);
 
-  const fetchWorkSummary = async () => {
+  // ✅ 1. useCallback으로 fetch 함수 감싸기
+  const fetchWorkSummary = useCallback(async () => {
     if (!selectedEmployee) return;
+
     try {
       const res = await axios.get("http://localhost:5000/api/admin/work-summary", {
         params: {
@@ -80,17 +82,12 @@ function WorkCheckPage() {
     } catch (err) {
       console.error("근무 요약 불러오기 오류:", err);
     }
-  };
+  }, [selectedEmployee, selectedYear, selectedMonth]);
 
-  useEffect(() => {
-    axios.get("http://localhost:5000/api/admin/locations").then((res) => {
-      setLocations(res.data);
-    });
-  }, []);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // ✅ 2. 자동 새로고침 유지 (의존성에 fetchWorkSummary만)
   useEffect(() => {
     fetchWorkSummary();
-  }, [selectedEmployee, selectedYear, selectedMonth]);
+  }, [fetchWorkSummary]);
 
   const handleTimeChange = (dateStr, field, value) => {
     setTimeEdits((prev) => ({
