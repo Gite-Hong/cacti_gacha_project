@@ -16,11 +16,11 @@ app.use("/api/work", workRoutes);
 app.use("/api/admin", adminRoutes);
 
 // React 정적 파일 제공 (한 번만 설정)
-app.use(express.static(path.join(__dirname, "../build")));
+app.use(express.static(path.join(__dirname, "../frontend/build")));
 
 // React 앱의 모든 클라이언트 라우트를 처리 (API 라우트 뒤에 위치해야 함)
 app.get("/*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../build/index.html"));
+  res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
 });
 
 // ✅ 서버 켜질 때 오늘의 결석자 자동 기록
