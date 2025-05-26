@@ -1,0 +1,93 @@
+.work-check-page {
+    padding: 20px;
+  }
+  
+  .employee-list {
+    list-style: none;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 0;
+    margin: 10px 0;
+  }
+  
+  .employee-list li button {
+    padding: 5px 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .employee-list li button:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .work-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .work-table th,
+  .work-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+  }/* === 비고 설명 공통 === */
+.remarks-container {
+    position: fixed; /* 뷰포트 기준으로 고정 (스크롤 무관) */
+    top: 0; /* 화면 상단에 고정 */
+    right: 0; /* 화면 오른쪽 끝에 고정 */
+    z-index: 1000; /* 다른 콘텐츠보다 위에 표시 */
+    width: 300px; /* 디폴트 가로 크기 (PC 환경) */
+    height: auto; /* 높이는 내용에 따라 자동 확장 */
+    background-color: #f8f9fa; /* 밝은 회색 배경 */
+    border-left: 1px solid #e9ecef; /* 좌측 경계선 추가 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+    padding: 15px; /* 내부 여백 */
+    font-size: 0.9rem; /* 기본 텍스트 크기 */
+    color: #495057; /* 텍스트 색상 */
+  }
+  
+  /* 제목 스타일 */
+  .remarks-container h2 {
+    font-size: 1rem; /* 제목 크기 */
+    color: #007bff; /* 파란 강조 색상 */
+    text-align: center; /* 중앙 정렬 */
+    margin-bottom: 10px; /* 제목 아래 간격 */
+  }
+  
+  /* 목록 스타일 */
+  .remarks-container ul {
+    list-style-type: none; /* 목록 기본 스타일 제거 */
+    padding-left: 0; /* 좌측 패딩 제거 */
+  }
+  
+  .remarks-container li {
+    margin-bottom: 8px; /* 목록 간 간격 */
+    line-height: 1.5; /* 줄 간격 */
+  }
+  
+  .remarks-container strong {
+    color: #007bff; /* 강조된 텍스트 */
+  }
+  
+  /* === PC 작은 화면 (1440px 이하) === */
+  @media (max-width: 1440px) {
+    .remarks-container {
+      width: 250px; /* 가로 크기 축소 */
+      padding: 10px; /* 내부 여백 축소 */
+      font-size: 0.85rem; /* 글씨 크기 조금 줄이기 */
+    }
+  }
+  
+  /* === 모바일 환경 (768px 이하) === */
+  @media (max-width: 768px) {
+    .remarks-container {
+      width: 200px; /* 가로 크기 축소 */
+      padding: 10px; /* 내부 여백 줄임 */
+      font-size: 0.8rem; /* 텍스트 크기 축소 */
+    }
+  }
+  

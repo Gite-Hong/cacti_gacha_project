@@ -1,0 +1,71 @@
+/* AdminPage.css */
+
+/* 전체 컨테이너 */
+.admin-container {
+    padding: 20px;
+    background-color: #f0f2f5;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* 사용자 카드 */
+  .user-card {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* 수정 버튼 */
+  .edit-button {
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .edit-button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* 요일 체크박스를 가로로 정렬 */
+  .weekdays-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  
+  .weekdays-container label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9rem;
+  }
+  
+  /* 시간 선택 필드 */
+  .time-select {
+    width: 120px;
+    padding: 6px;
+    margin-right: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+ .header-logo {
+  width: clamp(150px, 40vw, 400px);
+  height: auto;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 480px) {
+  .header-logo {
+    width: clamp(180px, 70vw, 300px);
+  }
+}
+/* 지점 항목 간격 */
+.location-item {
+  margin-bottom: 12px;
+}

@@ -1,0 +1,11 @@
+.header-logo {
+  width: clamp(150px, 40vw, 400px);
+  height: auto;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 480px) {
+  .header-logo {
+    width: clamp(180px, 70vw, 300px);
+  }
+}
