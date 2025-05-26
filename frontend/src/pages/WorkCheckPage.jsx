@@ -25,7 +25,7 @@ function WorkCheckPage() {
       return "일월화수목금토".charAt(day);
     };
 
-  const [locations, setLocations] = useState([]);
+  const [locations] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState("");
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
