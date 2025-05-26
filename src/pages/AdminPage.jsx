@@ -9,8 +9,7 @@ function AdminPage({ user }) {
   const [locations, setLocations] = useState([]); // 지점 목록
   const [newLocation, setNewLocation] = useState(""); // 새 지점
   const [showUserEdit, setShowUserEdit] = useState(false); // 회원정보 관리 표시
-  const [editStartTime, setEditStartTime] = useState("");
-  const [editEndTime, setEditEndTime] = useState("");
+
   const [selectedLocation, setSelectedLocation] = useState("전체"); // 지점 필터 상태
 
   const navigate = useNavigate();

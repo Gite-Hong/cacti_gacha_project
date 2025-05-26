@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import AdminPage from "./AdminPage";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Header from "../components/Header";
 
 function MainPage({ user, setUser }) {
   const [currentTime, setCurrentTime] = useState("");
