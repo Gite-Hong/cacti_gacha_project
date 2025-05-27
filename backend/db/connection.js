@@ -2,11 +2,11 @@ require("dotenv").config(); // ← 꼭 맨 위에 있어야 함!
 const mysql = require("mysql2");
 
 const db = mysql.createConnection({
-  host: process.env.DB_HOST,     // mysql.railway.internal
+  host: process.env.DB_HOST,     // trolley.proxy.rlwy.net
   user: process.env.DB_USER,     // root
-  password: process.env.DB_PASS, // Railway에서 받은 비번
+  password: process.env.DB_PASS, // aGrgxhhVfDAtSEuYwmTAaxpmuShztPOd
   database: process.env.DB_NAME, // railway
-  port: process.env.DB_PORT,     // 3306
+  port: process.env.DB_PORT,     // 28948
 });
 
 db.connect((err) => {
