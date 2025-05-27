@@ -6,6 +6,9 @@ import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import "./WorkCheckPage.css";
 
+const API_URL = process.env.REACT_APP_BACKEND_URL;
+
+
 function WorkCheckPage() {
     const remarksDescriptions = [
         { symbol: "00", description: "출근 정상 + 퇴근 정상" },
@@ -25,7 +28,7 @@ function WorkCheckPage() {
       return "일월화수목금토".charAt(day);
     };
 
-  const [locations] = useState([]);
+  const [locations, setLocations] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState("");
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
@@ -39,12 +42,26 @@ function WorkCheckPage() {
     if (username) setSelectedEmployee(username);
   }, [username]);
 
+  // ✅ 지점 목록 불러오기 useEffect
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/api/admin/locations`);
+        setLocations(res.data);
+      } catch (err) {
+        console.error("지점 목록 불러오기 실패:", err);
+      }
+    };
+
+    fetchLocations();
+  }, []);
+
   // ✅ 1. useCallback으로 fetch 함수 감싸기
   const fetchWorkSummary = useCallback(async () => {
     if (!selectedEmployee) return;
 
     try {
-      const res = await axios.get("http://localhost:5000/api/admin/work-summary", {
+      const res = await axios.get(`${API_URL}/api/admin/work-summary`, {
         params: {
           username: selectedEmployee,
           year: selectedYear,
@@ -145,7 +162,7 @@ function WorkCheckPage() {
     return `${yyyy}-${mm}-${dd} ${hh}:${mi}:${ss}`;
   };
 
-    await axios.post("http://localhost:5000/api/admin/delete-work", {
+    await axios.post(`${API_URL}/api/admin/delete-work`, {
       username: record.username,
       clock_in: toMySQLDatetime(record.clock_in),
     });
@@ -335,7 +352,7 @@ function WorkCheckPage() {
             setSelectedLocation(loc);
             if (loc) {
               const res = await axios.get(
-                `http://localhost:5000/api/admin/users/by-location/${loc}`
+                `${API_URL}/api/admin/users/by-location/${loc}`
               );
               setEmployees(res.data);
               setSelectedEmployee(null);
@@ -422,7 +439,7 @@ function WorkCheckPage() {
                 const handleUpdate = async () => {
                   try {
                     if (record.isNew) {
-                      await axios.post("http://localhost:5000/api/admin/insert-work", {
+                      await axios.post(`${API_URL}/api/admin/insert-work`, {
                         username: record.username,
                         clock_in: `${selectedDate} ${clockIn}:00`,
                         clock_out: `${selectedDate} ${clockOut}:00`,
@@ -430,7 +447,7 @@ function WorkCheckPage() {
                         memo: "직접 입력 완료",
                       });
                     } else {
-                      await axios.put("http://localhost:5000/api/admin/update-work", {
+                      await axios.put(`${API_URL}/api/admin/update-work`, {
                         username: record.username,
                         date: dateStr,
                         clock_in: `${dateStr} ${clockIn}:00`,

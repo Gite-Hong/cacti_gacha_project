@@ -1,27 +1,37 @@
+require("dotenv").config();  // ⬅️ .env 파일 로드
+
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const authRoutes = require("./routes/auth");
 const workRoutes = require("./routes/work");
-const adminRoutes = require("./routes/admin"); // 관리자 전용
-const db = require("./db/connection"); // ✅ DB 연결 객체 불러옴
+const adminRoutes = require("./routes/admin");
+const db = require("./db/connection");
 
 const app = express();
-app.use(cors());
-app.use(express.json()); // JSON 요청 처리
 
-// API 라우트 연결
+// ✅ CORS 설정 보완
+const corsOptions = {
+  origin: [
+    "http://localhost:3000",
+    //"https://your-frontend.vercel.app"
+  ],
+  credentials: true,
+};
+app.use(cors(corsOptions));
+
+app.use(express.json());
+
 app.use("/api/auth", authRoutes);
 app.use("/api/work", workRoutes);
 app.use("/api/admin", adminRoutes);
 
-// React 정적 파일 제공 (한 번만 설정)
+// React 정적 파일 제공
 app.use(express.static(path.join(__dirname, "../frontend/build")));
-
-// React 앱의 모든 클라이언트 라우트를 처리 (API 라우트 뒤에 위치해야 함)
 app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
 });
+
 
 // ✅ 서버 켜질 때 오늘의 결석자 자동 기록
 async function markAbsenteesToday() {
@@ -114,11 +124,9 @@ async function markMissingClockOuts() {
 }
 
 
-
-// ✅ 서버 실행 + 결석 처리 동시 실행
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`서버가 포트 ${PORT}번에서 실행 중입니다.`);
-  markAbsenteesToday(); // ✅ 자동 결석 처리
-  markMissingClockOuts();     // 퇴근 누락 자동 처리 ✅
+  markAbsenteesToday();
+  markMissingClockOuts();
 });

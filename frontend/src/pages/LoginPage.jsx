@@ -11,10 +11,12 @@ function LoginPage({ setUser }) {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
+  const API_URL = process.env.REACT_APP_BACKEND_URL; // ⬅️ 백엔드 URL .env에서 가져오기
+
   const handleLogin = async () => {
     setErrorMessage("");
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/login", { username, password });
+      const response = await axios.post(`${API_URL}/api/auth/login`, { username, password });
       const loggedInUser = response.data.user;
       setUser(loggedInUser);
 
@@ -45,7 +47,7 @@ function LoginPage({ setUser }) {
     <div className="login-container">
       {/* ⬇️ 로고 이미지 추가 */}
       <img src={logo} alt="로고" className="login-logo" />
-      <div className ="login-box">
+      <div className="login-box">
         <h1 className="login-title">로그인</h1>
         <div className="login-form">
           <div className="form-group">
@@ -79,6 +81,6 @@ function LoginPage({ setUser }) {
       </div>
     </div>
   );
-
 }
+
 export default LoginPage;

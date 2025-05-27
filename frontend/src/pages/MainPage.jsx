@@ -3,6 +3,8 @@ import AdminPage from "./AdminPage";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = process.env.REACT_APP_BACKEND_URL;
+
 function MainPage({ user, setUser }) {
   const [currentTime, setCurrentTime] = useState("");
   const [hasClockedIn, setHasClockedIn] = useState(false); // 출근했는지 여부
@@ -30,7 +32,7 @@ function MainPage({ user, setUser }) {
   useEffect(() => {
     const checkClockInStatus = async () => {
       try {
-        const res = await axios.post("/api/work/status", {
+        const res = await axios.post(`${API_URL}/api/work/status`, {
           username: user.username,
         });
         setHasClockedIn(res.data.isClockedIn);
@@ -45,7 +47,7 @@ function MainPage({ user, setUser }) {
   const handleClockIn = async () => {
     try {
       // 1. 사용자 근무시간 정보 가져오기
-      const resUser = await axios.get("http://localhost:5000/api/admin/users");
+      const resUser = await axios.get(`${API_URL}/api/admin/users`);
       const currentUser = resUser.data.find(u => u.username === user.username);
 
       if (!currentUser) {
@@ -72,7 +74,7 @@ function MainPage({ user, setUser }) {
       }
 
       // 3. 정상 출근 처리
-      await axios.post("/api/work/clock-in", {
+      await axios.post(`${API_URL}/api/work/clock-in`, {
         username: user.username,
       });
       alert(`${user.name}님, 출근 기록 완료!`);
@@ -87,7 +89,7 @@ function MainPage({ user, setUser }) {
   // 퇴근
   const handleClockOut = async () => {
     try {
-      const res = await axios.post("/api/work/clock-out", {
+      const res = await axios.post(`${API_URL}/api/work/clock-out`, {
         username: user.username,
       });
       // ✅ 서버가 퇴근 거부했을 경우
