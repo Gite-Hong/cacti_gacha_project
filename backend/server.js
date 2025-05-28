@@ -10,9 +10,14 @@ const db = require("./db/connection");
 
 const app = express();
 
-// ✅ 요청 로그 + CORS 헤더 직접 삽입 (강제 삽입)
+// ✅ 모든 요청 로그 출력
 app.use((req, res, next) => {
-  console.log("✅ 요청됨:", req.method, req.path);
+  console.log("✅ 요청 들어옴:", req.method, req.path);
+  next();
+});
+
+// ✅ CORS 헤더 강제 삽입
+app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "http://localhost:3000");
   res.header("Access-Control-Allow-Credentials", "true");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
@@ -20,30 +25,31 @@ app.use((req, res, next) => {
   next();
 });
 
-// ✅ CORS 미들웨어 설정
-const corsOptions = {
-  origin: "http://localhost:3000",
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-};
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // OPTIONS 사전 요청 허용
+// ✅ OPTIONS 프리플라이트 요청 수동 처리
+app.options("*", (req, res) => {
+  console.log("✅ OPTIONS preflight 요청 처리됨");
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  return res.sendStatus(200);
+});
 
+// ✅ JSON 파싱 미들웨어
 app.use(express.json());
 
-// ✅ 라우터 등록
+// ✅ 라우터 연결
 app.use("/api/auth", authRoutes);
 app.use("/api/work", workRoutes);
 app.use("/api/admin", adminRoutes);
 
-// ✅ React 정적 파일 제공
+// ✅ 정적 파일 (프론트 빌드) 제공
 app.use(express.static(path.join(__dirname, "../frontend/build")));
 app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
 });
 
-// ✅ 서버 켜질 때 자동 결석 처리
+// ✅ 서버 시작 시 자동 결석 처리
 async function markAbsenteesToday() {
   const now = new Date();
   const yyyyMMdd = now.toISOString().slice(0, 10);
@@ -126,7 +132,7 @@ async function markMissingClockOuts() {
   }
 }
 
-// ✅ 서버 시작
+// ✅ 서버 실행
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 서버가 포트 ${PORT}번에서 실행 중입니다.`);
