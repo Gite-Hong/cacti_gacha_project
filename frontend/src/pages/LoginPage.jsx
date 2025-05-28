@@ -16,7 +16,7 @@ function LoginPage({ setUser }) {
   const handleLogin = async () => {
     setErrorMessage("");
     try {
-      const response = await axios.post(`${API_URL}/api/auth/login`, { username, password });
+      const response = await axios.post(`${API_URL}/api/auth/login`, { username, password },{ withCredentials: true });
       const loggedInUser = response.data.user;
       setUser(loggedInUser);
 
