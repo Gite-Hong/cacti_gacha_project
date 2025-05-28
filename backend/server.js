@@ -20,18 +20,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions)); // OPTIONS 허용
 
-// ✅ CORS 설정 보완
-const corsOptions = {
-  origin: "http://localhost:3000",
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-};
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // OPTIONS 허용
-
-app.use(express.json());
-
 // ✅ 직접 헤더 수동 설정 (fallback 방지용)
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "http://localhost:3000");
@@ -41,11 +29,7 @@ app.use((req, res, next) => {
   next();
 });
 
-
-
 app.use(express.json());
-
-
 
 app.use("/api/auth", authRoutes);
 app.use("/api/work", workRoutes);
