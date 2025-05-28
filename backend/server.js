@@ -10,18 +10,9 @@ const db = require("./db/connection");
 
 const app = express();
 
-// ✅ CORS 설정 보완
-const corsOptions = {
-  origin: "http://localhost:3000",
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-};
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // OPTIONS 허용
-
-// ✅ 직접 헤더 수동 설정 (fallback 방지용)
+// ✅ 요청 로그 + CORS 헤더 직접 삽입 (강제 삽입)
 app.use((req, res, next) => {
+  console.log("✅ 요청됨:", req.method, req.path);
   res.header("Access-Control-Allow-Origin", "http://localhost:3000");
   res.header("Access-Control-Allow-Credentials", "true");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
@@ -29,20 +20,30 @@ app.use((req, res, next) => {
   next();
 });
 
+// ✅ CORS 미들웨어 설정
+const corsOptions = {
+  origin: "http://localhost:3000",
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+};
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // OPTIONS 사전 요청 허용
+
 app.use(express.json());
 
+// ✅ 라우터 등록
 app.use("/api/auth", authRoutes);
 app.use("/api/work", workRoutes);
 app.use("/api/admin", adminRoutes);
 
-// React 정적 파일 제공
+// ✅ React 정적 파일 제공
 app.use(express.static(path.join(__dirname, "../frontend/build")));
 app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
 });
 
-
-// ✅ 서버 켜질 때 오늘의 결석자 자동 기록
+// ✅ 서버 켜질 때 자동 결석 처리
 async function markAbsenteesToday() {
   const now = new Date();
   const yyyyMMdd = now.toISOString().slice(0, 10);
@@ -56,16 +57,11 @@ async function markAbsenteesToday() {
     let count = 0;
 
     for (const user of users) {
-      // 아직 work_end 시간이 안 지났으면 결석 처리 안 함
       if (!user.work_end) continue;
 
       const workEndTime = new Date(`${yyyyMMdd}T${user.work_end}`);
-      if (now < workEndTime) {
-        // 아직 퇴근 시간 전이면 skip
-        continue;
-      }
+      if (now < workEndTime) continue;
 
-      // 오늘 clock_in 기록이 이미 있는지 확인
       const [records] = await db.promise().query(
         "SELECT * FROM work_records WHERE username = ? AND DATE(clock_in) = ?",
         [user.username, yyyyMMdd]
@@ -86,6 +82,7 @@ async function markAbsenteesToday() {
   }
 }
 
+// ✅ 자동 퇴근 누락 처리
 async function markMissingClockOuts() {
   const now = new Date();
   const yyyyMMdd = now.toISOString().slice(0, 10);
@@ -108,12 +105,9 @@ async function markMissingClockOuts() {
       const passedHours = passedMs / 1000 / 60 / 60;
 
       if (passedHours >= 8) {
-        // 계산용 날짜 문자열
         const dateStr = clockIn.toISOString().slice(0, 10);
-
         const contractStart = new Date(`${dateStr}T${rec.work_start}`);
         const contractEnd = new Date(`${dateStr}T${rec.work_end}`);
-
         const totalHours = ((contractEnd - contractStart) / 1000 / 60 / 60).toFixed(2);
 
         await db.promise().query(`
@@ -132,10 +126,10 @@ async function markMissingClockOuts() {
   }
 }
 
-
+// ✅ 서버 시작
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`서버가 포트 ${PORT}번에서 실행 중입니다.`);
+  console.log(`🚀 서버가 포트 ${PORT}번에서 실행 중입니다.`);
   markAbsenteesToday();
   markMissingClockOuts();
 });
