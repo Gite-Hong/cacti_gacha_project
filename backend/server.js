@@ -10,30 +10,11 @@ const db = require("./db/connection");
 
 const app = express();
 
-// ✅ 모든 요청 로그 출력
-app.use((req, res, next) => {
-  console.log("✅ 요청 들어옴:", req.method, req.path);
-  next();
-});
-
-// ✅ CORS 헤더 강제 삽입
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  next();
-});
-
-// ✅ OPTIONS 프리플라이트 요청 수동 처리
-app.options("*", (req, res) => {
-  console.log("✅ OPTIONS preflight 요청 처리됨");
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  return res.sendStatus(200);
-});
+// ✅ CORS 미들웨어 (정석 방식)
+app.use(cors({
+  origin: "http://localhost:3000",  // 개발용
+  credentials: true
+}));
 
 // ✅ JSON 파싱 미들웨어
 app.use(express.json());
