@@ -38,9 +38,9 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization"],
 };
 
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));  // ✅ preflight 요청 허용
 
+app.options("*", cors(corsOptions));  // ✅ preflight 요청 허용
+app.use(cors(corsOptions));
 // ✅ JSON 파싱 미들웨어
 app.use(express.json());
 
