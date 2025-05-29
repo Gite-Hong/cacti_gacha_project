@@ -119,6 +119,13 @@ async function markMissingClockOuts() {
   }
 }
 
+// ✅ 에러 로깅 미들웨어 추가 (가장 마지막에 위치해야 함)
+app.use((err, req, res, next) => {
+  console.error("❗️Express 처리 중 에러 발생:", err);
+  res.status(500).json({ message: "서버 내부 오류 발생" });
+});
+
+
 // ✅ 서버 실행
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
