@@ -19,7 +19,9 @@ app.use((req, res, next) => {
 // ✅ CORS 설정
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://cactigachaproject-production.up.railway.app"
+  "https://cactigachaproject-production.up.railway.app",
+  "https://cacti-gacha-project.vercel.app",  // ✅ 메인 도메인
+  "https://cacti-gacha-project-r3i6z72d8-gites-projects-ecc715d3.vercel.app" // ✅ 서브 도메인도 허용
 ];
 
 const corsOptions = {
