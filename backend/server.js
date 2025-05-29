@@ -11,14 +11,30 @@ const db = require("./db/connection");
 const app = express();
 
 // ✅ CORS 미들웨어 (정석 방식)
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://cactigachaproject-production.up.railway.app"
+];
+
 app.use(cors({
-  origin: "http://localhost:3000",  // 개발용
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true
 }));
 
-// ✅ Preflight OPTIONS 요청 허용 추가
 app.options("*", cors({
-  origin: "http://localhost:3000",
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true
 }));
 
