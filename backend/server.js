@@ -16,6 +16,12 @@ app.use(cors({
   credentials: true
 }));
 
+// ✅ Preflight OPTIONS 요청 허용 추가
+app.options("*", cors({
+  origin: "http://localhost:3000",
+  credentials: true
+}));
+
 // ✅ JSON 파싱 미들웨어
 app.use(express.json());
 
