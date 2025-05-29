@@ -10,33 +10,28 @@ const db = require("./db/connection");
 
 const app = express();
 
-// ✅ CORS 미들웨어 (정석 방식)
+// ✅ CORS 설정 (완성본)
 const allowedOrigins = [
   "http://localhost:3000",
   "https://cactigachaproject-production.up.railway.app"
 ];
 
-app.use(cors({
+const corsOptions = {
   origin: function (origin, callback) {
-    if (allowedOrigins.includes(origin)) {
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      console.log("❌ CORS 차단된 origin:", origin);
       callback(new Error("Not allowed by CORS: " + origin));
     }
   },
-  credentials: true
-}));
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+};
 
-app.options("*", cors({
-  origin: function (origin, callback) {
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS: " + origin));
-    }
-  },
-  credentials: true
-}));
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // preflight 요청 허용
 
 // ✅ JSON 파싱 미들웨어
 app.use(express.json());
@@ -140,7 +135,6 @@ app.use((err, req, res, next) => {
   console.error("❗️Express 처리 중 에러 발생:", err);
   res.status(500).json({ message: "서버 내부 오류 발생" });
 });
-
 
 // ✅ 서버 실행
 const PORT = process.env.PORT || 5000;
