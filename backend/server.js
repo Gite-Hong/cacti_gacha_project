@@ -10,7 +10,13 @@ const db = require("./db/connection");
 
 const app = express();
 
-// ✅ CORS 설정 (완성본)
+// ✅ 요청 로그 (모든 요청 로그 찍기)
+app.use((req, res, next) => {
+  console.log(`➡️ 요청됨: [${req.method}] ${req.originalUrl}`);
+  next();
+});
+
+// ✅ CORS 설정
 const allowedOrigins = [
   "http://localhost:3000",
   "https://cactigachaproject-production.up.railway.app"
@@ -18,20 +24,22 @@ const allowedOrigins = [
 
 const corsOptions = {
   origin: function (origin, callback) {
+    console.log("🔵 들어온 Origin:", origin);
     if (!origin || allowedOrigins.includes(origin)) {
+      console.log("🟢 CORS 허용됨:", origin);
       callback(null, true);
     } else {
-      console.log("❌ CORS 차단된 origin:", origin);
+      console.log("🔴 CORS 차단됨:", origin);
       callback(new Error("Not allowed by CORS: " + origin));
     }
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // preflight 요청 허용
+app.options("*", cors(corsOptions));  // ✅ preflight 요청 허용
 
 // ✅ JSON 파싱 미들웨어
 app.use(express.json());
@@ -130,7 +138,7 @@ async function markMissingClockOuts() {
   }
 }
 
-// ✅ 에러 로깅 미들웨어 추가 (가장 마지막에 위치해야 함)
+// ✅ 에러 로깅 미들웨어 (가장 마지막에 위치해야 함)
 app.use((err, req, res, next) => {
   console.error("❗️Express 처리 중 에러 발생:", err);
   res.status(500).json({ message: "서버 내부 오류 발생" });
