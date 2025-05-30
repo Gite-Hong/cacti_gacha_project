@@ -68,7 +68,7 @@ function MainPage({ user, setUser }) {
 
       const now = new Date();
       const dateStr = now.toISOString().slice(0, 10);
-      const workStart = new Date(`${dateStr}T${work_start}`);
+      //const workStart = new Date(`${dateStr}T${work_start}`);
       //const workEnd = new Date(`${dateStr}T${work_end}`);
       //const thirtyMinBeforeStart = new Date(workStart.getTime() - 30 * 60 * 1000);
 ////////////////////////////////////
