@@ -71,17 +71,24 @@ function MainPage({ user, setUser }) {
       const workStart = new Date(`${dateStr}T${work_start}`);
       const workEnd = new Date(`${dateStr}T${work_end}`);
       const thirtyMinBeforeStart = new Date(workStart.getTime() - 30 * 60 * 1000);
+////////////////////////////////////
+      // if (now < thirtyMinBeforeStart || now > workEnd) {
+      //   alert("근무시간이 아닙니다. 관리자에게 문의하세요.");
+      //   return;
+      // }
 
-      if (now < thirtyMinBeforeStart || now > workEnd) {
-        alert("근무시간이 아닙니다. 관리자에게 문의하세요.");
-        return;
-      }
-
-      await axios.post(
+      const response = await axios.post(
         `${API_URL}/api/work/clock-in`,
         { username: user.username },
         { withCredentials: true }
       );
+
+      // ✅ 백엔드에서 근무 요일 아님 응답이 온 경우
+      if (response.data.message === "근무 요일이 아닙니다.") {
+        alert("❌ 근무 요일이 아닙니다!");
+        return;
+      }
+      
       alert(`${user.name}님, 출근 기록 완료!`);
       setHasClockedIn(true);
     } catch (err) {
