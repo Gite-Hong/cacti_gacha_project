@@ -69,8 +69,8 @@ function MainPage({ user, setUser }) {
       const now = new Date();
       const dateStr = now.toISOString().slice(0, 10);
       const workStart = new Date(`${dateStr}T${work_start}`);
-      const workEnd = new Date(`${dateStr}T${work_end}`);
-      const thirtyMinBeforeStart = new Date(workStart.getTime() - 30 * 60 * 1000);
+      //const workEnd = new Date(`${dateStr}T${work_end}`);
+      //const thirtyMinBeforeStart = new Date(workStart.getTime() - 30 * 60 * 1000);
 ////////////////////////////////////
       // if (now < thirtyMinBeforeStart || now > workEnd) {
       //   alert("근무시간이 아닙니다. 관리자에게 문의하세요.");
